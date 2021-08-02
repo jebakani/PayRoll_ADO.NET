@@ -7,6 +7,8 @@ namespace PayRollWithDatabase
         static void Main(string[] args)
         {
             Console.WriteLine("Welcome to pay roll service");
+            EmployeeRepo repo = new EmployeeRepo();
+            repo.GetAllData();
         }
     }
 }
