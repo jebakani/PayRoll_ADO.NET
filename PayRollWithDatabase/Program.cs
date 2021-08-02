@@ -6,7 +6,7 @@ namespace PayRollWithDatabase
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Console.WriteLine("Welcome to pay roll service");
         }
     }
 }

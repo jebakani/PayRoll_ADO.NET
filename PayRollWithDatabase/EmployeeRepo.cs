@@ -13,6 +13,7 @@ namespace PayRollWithDatabase
         /// Creating the connection
         /// </summary>
         public static string connectionString = "Data Source=(localdb)\\ProjectsV13;Initial Catalog=Employee_Payroll_Database";
+        //creating the object for sql connection class
         SqlConnection sqlConnection = new SqlConnection(connectionString);
         public void GetAllData()
         {
