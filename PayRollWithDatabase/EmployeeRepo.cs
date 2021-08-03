@@ -18,7 +18,7 @@ namespace PayRollWithDatabase
         public void GetAllData()
         {
             //opening the sql connection
-            this.sqlConnection.Open();
+            sqlConnection.Open();
             //create the query to display data
             string query = @"select * from dbo.PayRollTable";
             //create object for employee detail class
@@ -60,8 +60,44 @@ namespace PayRollWithDatabase
             //finally close the connection
             finally
             {
-                this.sqlConnection.Close();
+                sqlConnection.Close();
             }
+        }
+
+        public void UpdateSalary()
+        {
+            //assigning the details which has to be updated
+            EmployeeDetails employee = new EmployeeDetails();
+            employee.employeeName = "Terissa";
+            employee.employeeId = 5;
+            employee.basicPay = 3000000;
+            using (sqlConnection)
+                try
+                {
+                    //passing query in terms of stored procedure
+                    SqlCommand sqlCommand = new SqlCommand("dbo.UpadateSalaryPayroll", sqlConnection);
+                    //passing command type as stored procedure
+                    sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                    sqlConnection.Open();
+                    //adding the parameter to the strored procedure
+                    sqlCommand.Parameters.AddWithValue("@id", employee.employeeId);
+                    sqlCommand.Parameters.AddWithValue("@name", employee.employeeName);
+                    sqlCommand.Parameters.AddWithValue("@basicPay", employee.basicPay);
+                    //checking the result 
+                    int result = sqlCommand.ExecuteNonQuery();
+                    if (result > 0)
+                        Console.WriteLine("Salary is updated");
+                    else
+                        Console.WriteLine("Updation failed");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+                finally 
+                {
+                    sqlConnection.Close();
+                }
         }
     }
 }
