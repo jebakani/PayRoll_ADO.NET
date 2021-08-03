@@ -99,5 +99,58 @@ namespace PayRollWithDatabase
                     sqlConnection.Close();
                 }
         }
+
+        public void DisplayDataBasedOnDate()
+        {
+            EmployeeDetails employee = new EmployeeDetails();
+            DateTime startdate = new DateTime(2020, 07, 20);
+            DateTime dateTime = new DateTime(2021, 07, 30);
+
+            using (sqlConnection)
+                try
+                {
+                    //passing query in terms of stored procedure
+                    SqlCommand sqlCommand = new SqlCommand("dbo.RetriveData", sqlConnection);
+                    //passing command type as stored procedure
+                    sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                    sqlConnection.Open();
+                    //adding the parameter to the strored procedure
+                    sqlCommand.Parameters.AddWithValue("@startDate",startdate);
+                    sqlCommand.Parameters.AddWithValue("@endDate",dateTime);
+                    SqlDataReader reader = sqlCommand.ExecuteReader();
+                    //if it has data
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            //store each data in the employee details properties 
+                            employee.employeeId = Convert.ToInt32(reader["id"]);
+                            employee.employeeName = reader["name"].ToString();
+                            employee.gender = reader["gender"].ToString();
+                            employee.startDate = reader.GetDateTime(2);
+                            employee.phoneNumber = Convert.ToDouble(reader["phoneNumber"]);
+                            employee.address = reader.GetString(5);
+                            employee.department = reader.GetString(6);
+                            //display the result
+                            Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} ", employee.employeeId, employee.employeeName, employee.gender, employee.startDate, employee.phoneNumber, employee.address, employee.department);
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("No data vailable");
+                    }
+                    reader.Close();
+                }
+                //if any exception occurs catch and display exception message
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+                //finally close the connection
+                finally
+                {
+                    sqlConnection.Close();
+                }
+        }
     }
 }
