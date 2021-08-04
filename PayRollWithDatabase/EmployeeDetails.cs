@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PayRollWithDatabase
 {
-    class EmployeeDetails
+   public class EmployeeDetails
     {
         public int employeeId{get;set;}
         public string employeeName { get; set; }

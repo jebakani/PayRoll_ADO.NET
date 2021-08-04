@@ -7,15 +7,16 @@ using System.Threading.Tasks;
 
 namespace PayRollWithDatabase
 {
-    class EmployeeRepo
+    public class EmployeeRepo
     {
+        List<EmployeeDetails> employeeList = new List<EmployeeDetails>();
         /// <summary>
         /// Creating the connection
         /// </summary>
         public static string connectionString = "Data Source=(localdb)\\ProjectsV13;Initial Catalog=Employee_Payroll_Database";
         //creating the object for sql connection class
         SqlConnection sqlConnection = new SqlConnection(connectionString);
-        public void GetAllData()
+        public List<EmployeeDetails>  GetAllData()
         {
             //opening the sql connection
             sqlConnection.Open();
@@ -44,18 +45,22 @@ namespace PayRollWithDatabase
                         employee.department = reader.GetString(6);
                         //display the result
                         Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} ",employee.employeeId,employee.employeeName,employee.gender,employee.startDate,employee.phoneNumber,employee.address,employee.department);
+                        employeeList.Add(employee);
                     }
+                    reader.Close();
+                    return employeeList;
                 }
                 else
                 {
-                    Console.WriteLine("No data vailable");
+                    reader.Close();
+                    return employeeList;
                 }
-                reader.Close();
+                
             }
             //if any exception occurs catch and display exception message
             catch(Exception e)
             {
-                Console.WriteLine(e.Message);
+                throw new Exception(e.Message);
             }
             //finally close the connection
             finally
@@ -63,14 +68,13 @@ namespace PayRollWithDatabase
                 sqlConnection.Close();
             }
         }
-
-        public void UpdateSalary()
+        public int UpdateSalary()
         {
             //assigning the details which has to be updated
             EmployeeDetails employee = new EmployeeDetails();
             employee.employeeName = "Terissa";
             employee.employeeId = 5;
-            employee.basicPay = 3000000;
+            employee.basicPay = 3000012;
             using (sqlConnection)
                 try
                 {
@@ -85,26 +89,21 @@ namespace PayRollWithDatabase
                     sqlCommand.Parameters.AddWithValue("@basicPay", employee.basicPay);
                     //checking the result 
                     int result = sqlCommand.ExecuteNonQuery();
-                    if (result > 0)
-                        Console.WriteLine("Salary is updated");
-                    else
-                        Console.WriteLine("Updation failed");
+                    return result;
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
+                    throw new Exception(e.Message);
                 }
                 finally 
                 {
                     sqlConnection.Close();
                 }
         }
-
-        public void DisplayDataBasedOnDate()
+        public List<EmployeeDetails> DisplayDataBasedOnDate(DateTime startdate, DateTime dateTime)
         {
             EmployeeDetails employee = new EmployeeDetails();
-            DateTime startdate = new DateTime(2020, 07, 20);
-            DateTime dateTime = new DateTime(2021, 07, 30);
+            
 
             using (sqlConnection)
                 try
@@ -133,24 +132,57 @@ namespace PayRollWithDatabase
                             employee.department = reader.GetString(6);
                             //display the result
                             Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} ", employee.employeeId, employee.employeeName, employee.gender, employee.startDate, employee.phoneNumber, employee.address, employee.department);
+                            employeeList.Add(employee);
                         }
+                        reader.Close();
+                        return employeeList;
                     }
                     else
                     {
-                        Console.WriteLine("No data vailable");
+                        reader.Close();
+                        return employeeList;
                     }
-                    reader.Close();
+                    
                 }
                 //if any exception occurs catch and display exception message
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.Message);
+                    throw new Exception(e.Message);
                 }
                 //finally close the connection
                 finally
                 {
                     sqlConnection.Close();
                 }
+        }
+
+        public string AggregareteFunction(int choice)
+        {
+            switch (choice)
+            {
+                case 1:
+                    string countQuery = "select Count(id) as CountOfEmployee from PayRollTable group by gender";
+                    string count = new SqlAggregate(sqlConnection).AgregateFunctionCalculate(countQuery);
+                    return count;
+                case 2:
+                    string query = "select Max(BasicPay) as MaximumSalary from PayRollTable group by gender";
+                    string maxSalary = new SqlAggregate(sqlConnection).AgregateFunctionCalculate(query);
+                    return maxSalary;
+                case 3:
+                    string minQuery = "select Min(BasicPay) as MinimumSalary from PayRollTable group by gender";
+                    string minSalary = new SqlAggregate(sqlConnection).AgregateFunctionCalculate(minQuery);
+                    return minSalary;
+                case 4:
+                    string avgQuery = "select Avg(BasicPay) as MaximumSalary from PayRollTable group by gender";
+                    string avgSalary = new SqlAggregate(sqlConnection).AgregateFunctionCalculate(avgQuery);
+                    return avgSalary;
+                case 5:
+                    string sumQuery = "select Sum(BasicPay) as MinimumSalary from PayRollTable group by gender";
+                    string totalSalary = new SqlAggregate(sqlConnection).AgregateFunctionCalculate(sumQuery);
+                    return totalSalary;
+                default:
+                    return ("invalidOption");
+            }
         }
     }
 }
