@@ -66,7 +66,7 @@ namespace PayRollTest
             Assert.AreEqual(expected, actual);
         }
 
-        //implementing the insert ino table method
+        //implementing the insert into table method
         [TestMethod]
         public void InsertIntoTableTest()
         {
