@@ -155,7 +155,6 @@ namespace PayRollWithDatabase
                     sqlConnection.Close();
                 }
         }
-
         public string AggregareteFunction(int choice)
         {
             switch (choice)
@@ -183,6 +182,44 @@ namespace PayRollWithDatabase
                 default:
                     return ("invalidOption");
             }
+        }
+
+        public int InsertIntotable(EmployeeDetails employee)
+        {
+            using (sqlConnection)
+                try
+                {
+                    //passing query in terms of stored procedure
+                    SqlCommand sqlCommand = new SqlCommand("dbo.InsertIntoTable1", sqlConnection);
+                    //passing command type as stored procedure
+                    sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                    sqlConnection.Open();
+                    //adding the parameter to the strored procedure
+                    sqlCommand.Parameters.AddWithValue("@employeeName", employee.employeeName);
+                    sqlCommand.Parameters.AddWithValue("@startDate", employee.startDate);
+                    sqlCommand.Parameters.AddWithValue("@gender", employee.gender);
+                    sqlCommand.Parameters.AddWithValue("@phonenumber", employee.phoneNumber);
+                    sqlCommand.Parameters.AddWithValue("@address", employee.address);
+                    sqlCommand.Parameters.AddWithValue("@department", employee.department);
+                    sqlCommand.Parameters.AddWithValue("@Deduction", employee.deduction);
+                    sqlCommand.Parameters.AddWithValue("@Tax", employee.tax);
+                    sqlCommand.Parameters.AddWithValue("@TaxablePay", employee.taxablePay);
+                    sqlCommand.Parameters.AddWithValue("@basicPay", employee.basicPay);
+                    //checking the result 
+                    int result = sqlCommand.ExecuteNonQuery();
+                    if (result > 0)
+                        return 1;
+                    else
+                        return 0;
+                }
+                catch (Exception e)
+                {
+                    throw new Exception(e.Message);
+                }
+                finally
+                {
+                    sqlConnection.Close();
+                }
         }
     }
 }

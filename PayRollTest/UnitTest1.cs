@@ -65,5 +65,27 @@ namespace PayRollTest
             //Assert
             Assert.AreEqual(expected, actual);
         }
+
+        //implementing the insert ino table method
+        [TestMethod]
+        public void InsertIntoTableTest()
+        {
+            int expected = 1;
+            //Assign
+            EmployeeDetails employee = new EmployeeDetails();
+            employee.employeeName = "joyal";
+            employee.address = "madurai";
+            employee.gender = "male";
+            employee.department = "HR";
+            employee.startDate = new DateTime(2021, 07, 27);
+            employee.basicPay = 110000;
+            employee.deduction = 2040;
+            employee.taxablePay = 1456;
+            employee.tax = 2345;
+            employee.phoneNumber = 9839883929;
+            int actual = repo.InsertIntotable(employee);
+            //Assert
+            Assert.AreEqual(expected, actual);
+        }
     }
 }

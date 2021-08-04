@@ -16,7 +16,10 @@ namespace PayRollWithDatabase
         public string address { get; set; }
         public string department { get; set; }
         public double basicPay { get; set; }
+        public double deduction { get; set; }
         public double taxablePay { get; set; }
+        public double tax { get; set; }
+
 
     }
 }
