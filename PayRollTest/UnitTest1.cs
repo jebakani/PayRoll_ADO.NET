@@ -22,7 +22,7 @@ namespace PayRollTest
             //Assign
             int expected = 6 ;
             //Act
-            List<EmployeeDetails> list = repo.GetAllData();
+            List<EmployeeDetails> list = repo.GetAllData("hello");
             int actual = list.Count();
             //Assert
             Assert.AreEqual(expected, actual);
@@ -34,7 +34,7 @@ namespace PayRollTest
             //Assign
             int expected = 1;
             //Act
-            int actual = repo.UpdateSalary();
+            int actual = repo.UpdateSalary(2,24000,"query");
             //Assert
             Assert.AreEqual(expected, actual);
         }
@@ -45,7 +45,7 @@ namespace PayRollTest
             int expected = 3;
             DateTime startdate = new DateTime(2020, 07, 20);
             DateTime dateTime = new DateTime(2021, 07, 30);
-            List<EmployeeDetails> list = repo.DisplayDataBasedOnDate(startdate,dateTime);
+            List<EmployeeDetails> list = repo.DisplayDataBasedOnDate(startdate,dateTime,"query");
             int actual = list.Count();
             Assert.AreEqual(expected, actual);
 
@@ -61,7 +61,7 @@ namespace PayRollTest
         {
            
             //Act
-            string actual = repo.AggregareteFunction(choice);
+            string actual = repo.AggregareteFunction("query");
             //Assert
             Assert.AreEqual(expected, actual);
         }
@@ -108,11 +108,51 @@ namespace PayRollTest
         {
             int expected = 1;
             //Assign
-            EmployeeDetails employee = new EmployeeDetails { employeeId=13,employeeName = "Tim", companyId = 1, departmentId = 3, phoneNumber = 8655535615, address = "MGRNagar", city = "madurai", state = "TamilNadu", startDate = "2017-12-05", gender = "M", basicPay = 34000 };
+            EmployeeDetails employee = new EmployeeDetails { employeeId=27,employeeName = "Tim", companyId = 1, departmentId = 3, phoneNumber = 8655535615, address = "MGRNagar", city = "madurai", state = "TamilNadu", startDate = "2017-12-05", gender = "M", basicPay = 34000 };
             TransactionManagement transaction = new TransactionManagement();
             int actual = transaction.AddingRecord(employee);
             Assert.AreEqual(expected, actual);
 
         }
+
+        //--------------Uc10- checking U2-6 in new tables
+        //implementing the parameterized test cases
+        [DataRow("1 3 6 ", "dbo.countEmployee")] //Count of employee test
+        [DataRow( "3000012 73000 ", "dbo.MaximumSalary1")] //maximum salary test
+        [DataRow( "10000 15000 ", "dbo.MinimumSalary1")] // minimum salary test
+        [DataRow( "770003 44000 ", "dbo.AverageSalary1")] // Avg salary test
+        [DataRow( "3080012 88000 ", "dbo.SumofSalary1")] //sum of salary test
+        [DataTestMethod]
+        public void AggregatefunctionTest2( string expected,string procedure)
+        {
+
+            //Act
+            string actual = repo.AggregareteFunction(procedure);
+            //Assert
+            Assert.AreEqual(expected, actual);
+        }
+        [TestMethod]
+        public void DisplayDataBasedOnData1()
+        {
+            int expected = 3;
+            DateTime startdate = new DateTime(2020, 07, 20);
+            DateTime dateTime = new DateTime(2021, 07, 30);
+            List<EmployeeDetails> list = repo.DisplayDataBasedOnDate(startdate, dateTime, "dbo.RetriveBasedOnDate");
+            int actual = list.Count();
+            Assert.AreEqual(expected, actual);
+
+        }
+        [TestMethod]
+        //checking whether the update is passed or not
+        public void UpdateSalaryTest1()
+        {
+            //Assign
+            int expected = 1;
+            //Act
+            int actual = repo.UpdateSalary(2, 24000, "dbo.updatePayroll");
+            //Assert
+            Assert.AreEqual(expected, actual);
+        }
+
     }
 }

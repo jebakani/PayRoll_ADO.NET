@@ -24,6 +24,7 @@ namespace PayRollWithDatabase
                     SqlCommand sqlCommand = new SqlCommand(query, sqlConnection);
                     //passing command type as stored procedur
                     this.sqlConnection.Open();
+                    sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                     SqlDataReader reader = sqlCommand.ExecuteReader();
                     //if the query has row 
                     if (reader.HasRows)

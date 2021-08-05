@@ -15,10 +15,11 @@ namespace PayRollWithDatabase
         public double netPay;
         public PayRollDetails(double basicPay)
         {
-            this.deduction = 0.2 * basicPay;
-            this.taxablePay = this.deduction - basicPay;
+            this.basicPay = basicPay;
+            this.deduction = 0.2 * this.basicPay;
+            this.taxablePay = this.basicPay-this.deduction;
             this.tax = 0.1 * taxablePay;
-            this.netPay = basicPay - this.tax;
+            this.netPay = this.basicPay - this.tax;
         }
     }
 }

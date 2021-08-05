@@ -16,12 +16,12 @@ namespace PayRollWithDatabase
         public static string connectionString = "Data Source=(localdb)\\ProjectsV13;Initial Catalog=Employee_Payroll_Database";
         //creating the object for sql connection class
         SqlConnection sqlConnection = new SqlConnection(connectionString);
-        public List<EmployeeDetails>  GetAllData()
+        public List<EmployeeDetails>  GetAllData(string query)
         {
             //opening the sql connection
             sqlConnection.Open();
             //create the query to display data
-            string query = @"select * from dbo.PayRollTable";
+            
             //create object for employee detail class
             EmployeeDetails employee = new EmployeeDetails();
             try
@@ -42,9 +42,9 @@ namespace PayRollWithDatabase
                         employee.startDate = reader.GetDateTime(2).ToString(); ;
                         employee.phoneNumber = Convert.ToDouble(reader["phoneNumber"]);
                         employee.address = reader.GetString(5);
-                        employee.department = reader.GetString(6);
+                        employee.netPay= Convert.ToDouble(reader["netPay"]);
                         //display the result
-                        Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} ",employee.employeeId,employee.employeeName,employee.gender,employee.startDate,employee.phoneNumber,employee.address,employee.department);
+                        Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} ",employee.employeeId,employee.employeeName,employee.gender,employee.startDate,employee.phoneNumber,employee.address,employee.netPay);
                         employeeList.Add(employee);
                     }
                     reader.Close();
@@ -68,25 +68,20 @@ namespace PayRollWithDatabase
                 sqlConnection.Close();
             }
         }
-        public int UpdateSalary()
+        public int UpdateSalary(int basePay,int id,string procedureName)
         {
-            //assigning the details which has to be updated
-            EmployeeDetails employee = new EmployeeDetails();
-            employee.employeeName = "Terissa";
-            employee.employeeId = 5;
-            employee.basicPay = 3000012;
+          
             using (sqlConnection)
                 try
                 {
                     //passing query in terms of stored procedure
-                    SqlCommand sqlCommand = new SqlCommand("dbo.UpadateSalaryPayroll", sqlConnection);
+                    SqlCommand sqlCommand = new SqlCommand(procedureName, sqlConnection);
                     //passing command type as stored procedure
                     sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                     sqlConnection.Open();
                     //adding the parameter to the strored procedure
-                    sqlCommand.Parameters.AddWithValue("@id", employee.employeeId);
-                    sqlCommand.Parameters.AddWithValue("@name", employee.employeeName);
-                    sqlCommand.Parameters.AddWithValue("@basicPay", employee.basicPay);
+                    sqlCommand.Parameters.AddWithValue("@id", id);
+                    sqlCommand.Parameters.AddWithValue("@basicPay", basePay);
                     //checking the result 
                     int result = sqlCommand.ExecuteNonQuery();
                     return result;
@@ -100,7 +95,7 @@ namespace PayRollWithDatabase
                     sqlConnection.Close();
                 }
         }
-        public List<EmployeeDetails> DisplayDataBasedOnDate(DateTime startdate, DateTime dateTime)
+        public List<EmployeeDetails> DisplayDataBasedOnDate(DateTime startdate, DateTime dateTime,string procedureName)
         {
             EmployeeDetails employee = new EmployeeDetails();
             
@@ -109,7 +104,7 @@ namespace PayRollWithDatabase
                 try
                 {
                     //passing query in terms of stored procedure
-                    SqlCommand sqlCommand = new SqlCommand("dbo.RetriveData", sqlConnection);
+                    SqlCommand sqlCommand = new SqlCommand(procedureName, sqlConnection);
                     //passing command type as stored procedure
                     sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
                     sqlConnection.Open();
@@ -123,15 +118,14 @@ namespace PayRollWithDatabase
                         while (reader.Read())
                         {
                             //store each data in the employee details properties 
-                            employee.employeeId = Convert.ToInt32(reader["id"]);
-                            employee.employeeName = reader["name"].ToString();
+                            employee.employeeId = Convert.ToInt32(reader["emp_id"]);
+                            employee.employeeName = reader["emp_name"].ToString();
                             employee.gender = reader["gender"].ToString();
                             employee.startDate = reader.GetDateTime(2).ToString();
                             employee.phoneNumber = Convert.ToDouble(reader["phoneNumber"]);
                             employee.address = reader.GetString(5);
-                            employee.department = reader.GetString(6);
                             //display the result
-                            Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} ", employee.employeeId, employee.employeeName, employee.gender, employee.startDate, employee.phoneNumber, employee.address, employee.department);
+                            Console.WriteLine("{0} {1} {2} {3} {4} {5}", employee.employeeId, employee.employeeName, employee.gender, employee.startDate, employee.phoneNumber, employee.address);
                             employeeList.Add(employee);
                         }
                         reader.Close();
@@ -155,33 +149,10 @@ namespace PayRollWithDatabase
                     sqlConnection.Close();
                 }
         }
-        public string AggregareteFunction(int choice)
+        public string AggregareteFunction(string procedureName)
         {
-            switch (choice)
-            {
-                case 1:
-                    string countQuery = "select Count(id) as CountOfEmployee from PayRollTable group by gender";
-                    string count = new SqlAggregate(sqlConnection).AgregateFunctionCalculate(countQuery);
-                    return count;
-                case 2:
-                    string query = "select Max(BasicPay) as MaximumSalary from PayRollTable group by gender";
-                    string maxSalary = new SqlAggregate(sqlConnection).AgregateFunctionCalculate(query);
-                    return maxSalary;
-                case 3:
-                    string minQuery = "select Min(BasicPay) as MinimumSalary from PayRollTable group by gender";
-                    string minSalary = new SqlAggregate(sqlConnection).AgregateFunctionCalculate(minQuery);
-                    return minSalary;
-                case 4:
-                    string avgQuery = "select Avg(BasicPay) as MaximumSalary from PayRollTable group by gender";
-                    string avgSalary = new SqlAggregate(sqlConnection).AgregateFunctionCalculate(avgQuery);
-                    return avgSalary;
-                case 5:
-                    string sumQuery = "select Sum(BasicPay) as MinimumSalary from PayRollTable group by gender";
-                    string totalSalary = new SqlAggregate(sqlConnection).AgregateFunctionCalculate(sumQuery);
-                    return totalSalary;
-                default:
-                    return ("invalidOption");
-            }
+            string data = new SqlAggregate(sqlConnection).AgregateFunctionCalculate(procedureName);
+            return data;
         }
 
         public int InsertIntotable(EmployeeDetails employee)
