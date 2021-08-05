@@ -153,6 +153,14 @@ namespace PayRollTest
             //Assert
             Assert.AreEqual(expected, actual);
         }
+        [TestMethod]
+        //UC12- Cascading delete
+        public void DeleteRecord()
+        {
+            int expected = 1;
+            int actual = new TransactionManagement().DeleteUsingCasadeDelete();
+            Assert.AreEqual(expected, actual);
+        }
 
     }
 }

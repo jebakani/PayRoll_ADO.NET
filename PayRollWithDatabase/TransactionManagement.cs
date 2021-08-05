@@ -48,6 +48,33 @@ namespace PayRollWithDatabase
                 }
             }
         }
+            public int DeleteUsingCasadeDelete()
+            {
+                
+                using (sqlConnection)
+                {
+                    sqlConnection.Open();
+                    //Begin SQL transaction
+                    SqlTransaction sqlTransaction = sqlConnection.BeginTransaction();
+                    try
+                    {
+                         string delete1= "delete from Employee where emp_id=4";
+
+                    new SqlCommand(delete1, sqlConnection, sqlTransaction).ExecuteNonQuery();
+                    new SqlCommand(delete1, sqlConnection, sqlTransaction).ExecuteNonQuery();
+                        sqlTransaction.Commit();
+                        return 1;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                        //Rollback to the point before exception
+                        sqlTransaction.Rollback();
+                        return 0;
+                    }
+                }
+            }
+        
            
     }
 }
