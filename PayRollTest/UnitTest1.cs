@@ -87,5 +87,20 @@ namespace PayRollTest
             //Assert
             Assert.AreEqual(expected, actual);
         }
+
+        //UC8-Insert into PayrollTable
+        [TestMethod]
+        public void InsertIntoPayrollTable()
+        {
+            int expected = 1;
+            //Assign
+            EmployeeDetails employee = new EmployeeDetails();
+            employee.basicPay = 18000;
+            employee.employeeId = 11;
+            TransactionManagement transaction = new TransactionManagement();
+            int actual = transaction.AddingRecord(employee);
+            Assert.AreEqual(expected, actual);
+
+        }
     }
 }

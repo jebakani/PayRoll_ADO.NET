@@ -27,6 +27,7 @@ namespace PayRollWithDatabase
                 case 4:
                     Console.WriteLine(  ""+ repo.AggregareteFunction(1));
                     break;
+
                 default:
                     break;
             }
