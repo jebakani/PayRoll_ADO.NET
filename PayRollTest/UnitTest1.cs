@@ -77,7 +77,7 @@ namespace PayRollTest
             employee.address = "madurai";
             employee.gender = "male";
             employee.department = "HR";
-            employee.startDate = new DateTime(2021, 07, 27);
+            employee.startDate = new DateTime(2021, 07, 27).ToLongDateString();
             employee.basicPay = 110000;
             employee.deduction = 2040;
             employee.taxablePay = 1456;
@@ -97,6 +97,18 @@ namespace PayRollTest
             EmployeeDetails employee = new EmployeeDetails();
             employee.basicPay = 18000;
             employee.employeeId = 11;
+            TransactionManagement transaction = new TransactionManagement();
+            int actual = transaction.AddingRecord(employee);
+            Assert.AreEqual(expected, actual);
+
+        }
+        //UC8-Insert into Tables with transaction
+        [TestMethod]
+        public void InsertIntoTables()
+        {
+            int expected = 1;
+            //Assign
+            EmployeeDetails employee = new EmployeeDetails { employeeId=13,employeeName = "Tim", companyId = 1, departmentId = 3, phoneNumber = 8655535615, address = "MGRNagar", city = "madurai", state = "TamilNadu", startDate = "2017-12-05", gender = "M", basicPay = 34000 };
             TransactionManagement transaction = new TransactionManagement();
             int actual = transaction.AddingRecord(employee);
             Assert.AreEqual(expected, actual);

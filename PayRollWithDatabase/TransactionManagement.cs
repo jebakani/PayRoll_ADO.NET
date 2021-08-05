@@ -18,35 +18,51 @@ namespace PayRollWithDatabase
         {
             EmployeeDetails details = employee;
             PayRollDetails payRoll = new PayRollDetails(employee.basicPay);
-            using(sqlConnection)
+            using (sqlConnection)
+            {
+                sqlConnection.Open();
+                //creating object for transaction class and begin transaction
+                SqlTransaction transaction = sqlConnection.BeginTransaction();
                 try
                 {
-                    sqlConnection.Open();
-                    string query="insert into Employee values('jerry',2, 9873643645, 'Gandhi Nagar' , 'tamilNadu' , 'salem','2016-06-23','M')";
-                    SqlCommand command = new SqlCommand(query, sqlConnection);
-                    //create data reader 
-                    int result = command.ExecuteNonQuery();
-                    //if last query executed next query takes place
-                    if(result>0)
-                    {
-                        query = "insert into PayRoll(Emp_id,BasicPay,Deduction,TaxablePay,Tax,NetPay) values(" + employee.employeeId + "," + payRoll.basicPay + "," + payRoll.deduction + "," + payRoll.taxablePay + "," + payRoll.tax + "," + payRoll.netPay + ")";
-                        command = new SqlCommand(query, sqlConnection);
-                        result = command.ExecuteNonQuery();
-                        if(result>0)
-                        {
-                            return 1;
-                        }
-                    }
+                    //executing the query
+                    string employeInsertion = "insert into Employee(emp_name,company_id,phoneNumber,address,city,state,startDate,gender) values ('" + employee.employeeName + "'," + employee.companyId + "," + employee.phoneNumber + ",'" + employee.address + "','" + employee.city + "','" + employee.state + "','" + employee.startDate + "','" + employee.gender + "')";
+                    new SqlCommand(employeInsertion, sqlConnection, transaction).ExecuteNonQuery();
+                    string retriveEmpId = "select emp_id from Employee where emp_name='" + employee.employeeName + "' and phoneNumber=" + employee.phoneNumber;
+                    int empId = RetriveId(retriveEmpId, transaction);
+                    string payRollInsertion = "insert into PayRoll(Emp_id,BasicPay,Deduction,TaxablePay,Tax,NetPay) values(" + empId + "," + payRoll.basicPay + "," + payRoll.deduction + "," + payRoll.taxablePay + "," + payRoll.tax + "," + payRoll.netPay + ")";
+                    string employeeDepartmentInsertion = "insert into Employee_Department values (" + empId + "," + employee.departmentId + ")";
+
+                    new SqlCommand(payRollInsertion, sqlConnection, transaction).ExecuteNonQuery();
+                    new SqlCommand(employeeDepartmentInsertion, sqlConnection, transaction).ExecuteNonQuery();
+                    //if all query is successfull commit
+                    transaction.Commit();
+                    return 1;
+                }
+                catch (Exception e)
+                {
+                    //else roll back
+                    transaction.Rollback();
                     return 0;
                 }
-                catch(Exception e)
-                {
-                    throw new Exception(e.Message);
-                }
-                finally 
+                finally
                 {
                     sqlConnection.Close();
                 }
+            }
         }
+            public int RetriveId(string query, SqlTransaction transaction)
+            {
+                SqlDataReader reader = new SqlCommand(query, sqlConnection, transaction).ExecuteReader();
+                int id = 0;
+                if(reader.HasRows)
+                {
+                        id = Convert.ToInt32(reader["emp_id"]);
+                        reader.Close();
+                        return id;
+                }
+                throw new Exception("No data available");
+            }
     }
 }
+
