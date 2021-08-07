@@ -16,7 +16,6 @@ namespace PayRollWithDatabase
         SqlConnection sqlConnection = new SqlConnection(connectionString);
         public int AddingRecord(EmployeeDetails employee)
         {
-            EmployeeDetails details = employee;
             PayRollDetails payRoll = new PayRollDetails(employee.basicPay);
             using (sqlConnection)
             {
@@ -48,34 +47,111 @@ namespace PayRollWithDatabase
                 }
             }
         }
-            public int DeleteUsingCasadeDelete()
-            {
-                
-                using (sqlConnection)
-                {
-                    sqlConnection.Open();
-                    //Begin SQL transaction
-                    SqlTransaction sqlTransaction = sqlConnection.BeginTransaction();
-                    try
-                    {
-                         string delete1= "delete from Employee where emp_id=4";
+        public int DeleteUsingCasadeDelete(int id)
+        {
 
+            using (sqlConnection)
+            {
+                sqlConnection.Open();
+                //Begin SQL transaction
+                SqlTransaction sqlTransaction = sqlConnection.BeginTransaction();
+                try
+                {
+                    string delete1 = "update Employee set isActive=0 where emp_Id="+id+"";
                     new SqlCommand(delete1, sqlConnection, sqlTransaction).ExecuteNonQuery();
-                    new SqlCommand(delete1, sqlConnection, sqlTransaction).ExecuteNonQuery();
-                        sqlTransaction.Commit();
-                        return 1;
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                        //Rollback to the point before exception
-                        sqlTransaction.Rollback();
-                        return 0;
-                    }
+                    sqlTransaction.Commit();
+                    return 1;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    //Rollback to the point before exception
+                    sqlTransaction.Rollback();
+                    return 0;
                 }
             }
-        
-           
+        }
+        public int AddIsActiveColumn()
+        {
+            using (sqlConnection)
+            {
+                sqlConnection.Open();
+                //Begin SQL transaction
+                SqlTransaction sqlTransaction = sqlConnection.BeginTransaction();
+                try
+                {
+                    string updatateQuery = "alter table Employee add isActive BIT NOT NULL default(1)";
+                    new SqlCommand(updatateQuery, sqlConnection, sqlTransaction).ExecuteNonQuery();
+                    sqlTransaction.Commit();
+                    return 1;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    //Rollback to the point before exception
+                    sqlTransaction.Rollback();
+                    return 0;
+                }
+                finally 
+                {
+                    sqlConnection.Close();
+                }
+            }
+        }
+        public List<EmployeeDetails> RetriveDataForAudit(string procedureName)
+        {
+            using (sqlConnection)
+            {
+                sqlConnection.Open();
+                EmployeeDetails employee = new EmployeeDetails();
+                List<EmployeeDetails> employeeList = new List<EmployeeDetails>();
+                try
+                {
+                    SqlCommand sqlCommand = new SqlCommand(procedureName, sqlConnection);
+                    //passing command type as stored procedure
+                    sqlCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                    //create data reader 
+                    SqlDataReader reader = sqlCommand.ExecuteReader();
+                    //if it has data
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            //store each data in the employee details properties 
+                            employee.employeeId = Convert.ToInt32(reader["emp_Id"]==DBNull.Value?default:reader["emp_Id"]);
+                            employee.employeeName = reader["emp_name"] == DBNull.Value ? default : reader["emp_name"].ToString();
+                            employee.gender = reader["gender"] == DBNull.Value ? default : reader["gender"].ToString();
+                            employee.startDate = reader["startDate"] == DBNull.Value ? default : reader["startDate"].ToString(); ;
+                            employee.phoneNumber = Convert.ToDouble(reader["phoneNumber"] == DBNull.Value ? default : reader["phoneNumber"]);
+                            employee.address = reader["address"] == DBNull.Value ? default : reader["address"].ToString();
+                            employee.netPay = Convert.ToDouble(reader["netPay"] == DBNull.Value ? default : reader["netPay"]);
+                            employee.department = reader["dept_name"] == DBNull.Value ? default : reader["dept_name"].ToString();
+                            //display the result
+                            Console.WriteLine("{0} {1} {2} {3} {4} {5} {6} ", employee.employeeId, employee.employeeName, employee.gender, employee.startDate, employee.phoneNumber, employee.address, employee.netPay);
+                            employeeList.Add(employee);
+                        }
+                        reader.Close();
+                        return employeeList;
+                    }
+                    else
+                    {
+                        reader.Close();
+                        return employeeList;
+                    }
+                }
+                //if any exception occurs catch and display exception message
+                catch (Exception e)
+                {
+                    throw new Exception(e.Message);
+                }
+                //finally close the connection
+                finally
+                {
+                    sqlConnection.Close();
+                }
+            }
+        }
+
     }
 }
 

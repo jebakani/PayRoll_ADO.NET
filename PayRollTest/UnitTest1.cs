@@ -120,7 +120,7 @@ namespace PayRollTest
         [DataRow("1 3 6 ", "dbo.countEmployee")] //Count of employee test
         [DataRow( "3000012 73000 ", "dbo.MaximumSalary1")] //maximum salary test
         [DataRow( "10000 15000 ", "dbo.MinimumSalary1")] // minimum salary test
-        [DataRow( "770003 44000 ", "dbo.AverageSalary1")] // Avg salary test
+        [DataRow( "770003 44000 ", "dbo.AverageSalary")] // Avg salary test
         [DataRow( "3080012 88000 ", "dbo.SumofSalary1")] //sum of salary test
         [DataTestMethod]
         public void AggregatefunctionTest2( string expected,string procedure)
@@ -158,8 +158,24 @@ namespace PayRollTest
         public void DeleteRecord()
         {
             int expected = 1;
-            int actual = new TransactionManagement().DeleteUsingCasadeDelete();
+            int actual = new TransactionManagement().DeleteUsingCasadeDelete(4);
             Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        //UC12- Cascading delete
+        public void AddindIsActiveField()
+        {
+            int expected = 1;
+            int actual = new TransactionManagement().AddIsActiveColumn();
+            Assert.AreEqual(expected, actual);   
+        }
+        [TestMethod]
+        public void RetrivingDataBasedOnIsActiveField()
+        {
+            int expected = 8;
+            List<EmployeeDetails> actual = new TransactionManagement().RetriveDataForAudit("dbo.RetriveAllData");
+            Assert.AreEqual(expected, actual.Count);
         }
 
     }
