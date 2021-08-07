@@ -192,6 +192,13 @@ namespace PayRollTest
             long actual = new TransactionManagement().InsertWithThread();
             Console.WriteLine("" + actual);
         }
+        //UC15-Synchronization
+        [TestMethod]
+        public void TestInsertionWithSynchronization()
+        {
+            long actual = new TransactionManagement().InsertWithThread();
+            Console.WriteLine("" + actual);
+        }
 
     }
 }
