@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +19,7 @@ namespace PayRollWithDatabase
         //UC11-Insertion using transaction
         public int AddingRecord(EmployeeDetails employee)
         {
+            SqlConnection sqlConnection = new SqlConnection(connectionString);
             PayRollDetails payRoll = new PayRollDetails(employee.basicPay);
             using (sqlConnection)
             {
@@ -154,6 +156,21 @@ namespace PayRollWithDatabase
             }
         }
 
+        public long InsertWithoutThread()
+        {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            AddDetails();
+            stopwatch.Stop();
+            return (stopwatch.ElapsedMilliseconds);
+
+        }
+        void AddDetails()
+        {
+            AddingRecord(new EmployeeDetails { employeeName = "jack", address = "xyz road", companyId = 2, city = "salem", state = "Kerala", startDate = "2014-12-30", gender = "M", phoneNumber = 8542361523, departmentId = 5, basicPay = 45000 });
+            AddingRecord(new EmployeeDetails { employeeName = "Sparro", address = "YMC road", companyId = 2, city = "Chennai", state = "TamilNadu", startDate = "2014-06-30", gender = "F", phoneNumber = 8542361523, departmentId = 4, basicPay = 15000 });
+            AddingRecord(new EmployeeDetails { employeeName = "Reddy", address = "RMK Street", companyId = 2, city = "Kottaiyam", state = "Kerala", startDate = "2017-12-30", gender = "M", phoneNumber = 8542361523, departmentId = 3, basicPay = 35000 });     
+        }
     }
 }
 

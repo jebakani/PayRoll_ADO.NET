@@ -178,5 +178,13 @@ namespace PayRollTest
             Assert.AreEqual(expected, actual.Count);
         }
 
+        //UC13-AddingMultipleList without Thread
+        [TestMethod]
+        public void TestInsertionWithoutThread()
+        {
+            long actual = new TransactionManagement().InsertWithoutThread();
+            Console.WriteLine(""+actual);
+        }
+
     }
 }
