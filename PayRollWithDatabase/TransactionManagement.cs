@@ -165,11 +165,26 @@ namespace PayRollWithDatabase
             return (stopwatch.ElapsedMilliseconds);
 
         }
+        public long InsertWithThread()
+        {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            Task thread = new Task(() =>
+                  {
+                      AddingRecord(new EmployeeDetails { employeeId = 43, employeeName = "jack", address = "xyz road", companyId = 2, city = "salem", state = "Kerala", startDate = "2014-12-30", gender = "M", phoneNumber = 8542361523, departmentId = 5, basicPay = 45000 });
+                      AddingRecord(new EmployeeDetails { employeeId = 44, employeeName = "Sparro", address = "YMC road", companyId = 2, city = "Chennai", state = "TamilNadu", startDate = "2014-06-30", gender = "F", phoneNumber = 8542361523, departmentId = 4, basicPay = 15000 });
+                      AddingRecord(new EmployeeDetails { employeeId = 45, employeeName = "Reddy", address = "RMK Street", companyId = 2, city = "Kottaiyam", state = "Kerala", startDate = "2017-12-30", gender = "M", phoneNumber = 8542361523, departmentId = 3, basicPay = 35000 });
+                  });
+            thread.Start();
+            stopwatch.Stop();
+            return stopwatch.ElapsedMilliseconds;
+
+        }
         void AddDetails()
         {
-            AddingRecord(new EmployeeDetails { employeeName = "jack", address = "xyz road", companyId = 2, city = "salem", state = "Kerala", startDate = "2014-12-30", gender = "M", phoneNumber = 8542361523, departmentId = 5, basicPay = 45000 });
-            AddingRecord(new EmployeeDetails { employeeName = "Sparro", address = "YMC road", companyId = 2, city = "Chennai", state = "TamilNadu", startDate = "2014-06-30", gender = "F", phoneNumber = 8542361523, departmentId = 4, basicPay = 15000 });
-            AddingRecord(new EmployeeDetails { employeeName = "Reddy", address = "RMK Street", companyId = 2, city = "Kottaiyam", state = "Kerala", startDate = "2017-12-30", gender = "M", phoneNumber = 8542361523, departmentId = 3, basicPay = 35000 });     
+            AddingRecord(new EmployeeDetails {employeeId=43, employeeName = "jack", address = "xyz road", companyId = 2, city = "salem", state = "Kerala", startDate = "2014-12-30", gender = "M", phoneNumber = 8542361523, departmentId = 5, basicPay = 45000 });
+            AddingRecord(new EmployeeDetails {employeeId=44, employeeName = "Sparro", address = "YMC road", companyId = 2, city = "Chennai", state = "TamilNadu", startDate = "2014-06-30", gender = "F", phoneNumber = 8542361523, departmentId = 4, basicPay = 15000 });
+            AddingRecord(new EmployeeDetails {employeeId=45, employeeName = "Reddy", address = "RMK Street", companyId = 2, city = "Kottaiyam", state = "Kerala", startDate = "2017-12-30", gender = "M", phoneNumber = 8542361523, departmentId = 3, basicPay = 35000 });     
         }
     }
 }

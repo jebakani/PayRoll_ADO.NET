@@ -185,6 +185,13 @@ namespace PayRollTest
             long actual = new TransactionManagement().InsertWithoutThread();
             Console.WriteLine(""+actual);
         }
+        //UC14-AddingMultipleList with Thread
+        [TestMethod]
+        public void TestInsertionWithThread()
+        {
+            long actual = new TransactionManagement().InsertWithThread();
+            Console.WriteLine("" + actual);
+        }
 
     }
 }
