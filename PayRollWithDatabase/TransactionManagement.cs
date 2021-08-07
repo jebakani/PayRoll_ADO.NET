@@ -14,6 +14,8 @@ namespace PayRollWithDatabase
         public static string connectionString = "Data Source=(localdb)\\ProjectsV13;Initial Catalog=Employee_Payroll_Database";
         //creating the object for sql connection class
         SqlConnection sqlConnection = new SqlConnection(connectionString);
+
+        //UC11-Insertion using transaction
         public int AddingRecord(EmployeeDetails employee)
         {
             PayRollDetails payRoll = new PayRollDetails(employee.basicPay);
