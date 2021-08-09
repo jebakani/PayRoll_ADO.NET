@@ -200,5 +200,15 @@ namespace PayRollTest
             Console.WriteLine("" + actual);
         }
 
+        //-------------------Json server---------------
+        //UC1-Read data from server
+        [TestMethod]
+        public void ReadAllDataFromServer()
+        {
+            int expected = 3;
+            List<EmployeeDetailWithOnlySalary> employeeList = new PayRollJsonServer().ReadFromServer();
+            Assert.AreEqual(expected, employeeList.Count);
+        }
+
     }
 }
