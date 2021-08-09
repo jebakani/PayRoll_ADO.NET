@@ -42,5 +42,13 @@ namespace PayRollWithDatabase
             var res = JsonConvert.DeserializeObject<EmployeeDetailWithOnlySalary>(response.Content);
             Console.WriteLine("" + res.id+"Added");
         }
+        //Adding multiple data to the server
+        public void AddingMultipleContactToServer(List<EmployeeDetailWithOnlySalary> employees)
+        {
+            foreach (var employee in employees)
+            {
+                WriteIntoJsonServer(employee);
+            }
+        }
     }
 }
