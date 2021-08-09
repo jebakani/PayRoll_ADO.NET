@@ -229,6 +229,16 @@ namespace PayRollTest
             employeeList = new PayRollJsonServer().ReadFromServer();
             Assert.AreEqual(6, employeeList.Count);
         }
+        //UC4-update salarydetail in server
+        [TestMethod]
+        public void UpdateSalary()
+        {
+            bool expected = true;
+            EmployeeDetailWithOnlySalary employee = new EmployeeDetailWithOnlySalary { id = 4, name = "jason", salary = 75000 };
+            bool actual=new PayRollJsonServer().UpdateValueInJsonServer(employee);
+            Assert.AreEqual(expected, actual);
+        }
+
 
     }
 }

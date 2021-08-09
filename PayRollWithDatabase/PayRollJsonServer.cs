@@ -40,7 +40,7 @@ namespace PayRollWithDatabase
             request.AddParameter("application/json", json, ParameterType.RequestBody);
             IRestResponse response = client.Execute(request);
             var res = JsonConvert.DeserializeObject<EmployeeDetailWithOnlySalary>(response.Content);
-            Console.WriteLine("" + res.id+"Added");
+            Console.WriteLine("" + res.id + "Added");
         }
         //Adding multiple data to the server
         public void AddingMultipleContactToServer(List<EmployeeDetailWithOnlySalary> employees)
@@ -49,6 +49,20 @@ namespace PayRollWithDatabase
             {
                 WriteIntoJsonServer(employee);
             }
+        }
+        //Update the record using put method
+        public bool UpdateValueInJsonServer(EmployeeDetailWithOnlySalary employee)
+        {
+            int result = 0;
+            RestRequest request = new RestRequest("/employees/" + employee.id, Method.PUT);
+            JsonObject json = new JsonObject();
+            json.Add("id", employee.id);
+            json.Add("name", employee.name);
+            json.Add("salary", employee.salary);
+            request.AddParameter("application/json", json, ParameterType.RequestBody);
+            IRestResponse response = client.Execute(request);
+            var res = JsonConvert.DeserializeObject<EmployeeDetailWithOnlySalary>(response.Content);
+            return response.IsSuccessful;
         }
     }
 }
