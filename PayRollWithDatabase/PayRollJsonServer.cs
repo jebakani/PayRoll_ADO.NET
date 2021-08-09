@@ -64,5 +64,13 @@ namespace PayRollWithDatabase
             var res = JsonConvert.DeserializeObject<EmployeeDetailWithOnlySalary>(response.Content);
             return response.IsSuccessful;
         }
+        //delete the record from the server
+        public bool DeleteData(int id)
+        {
+            RestRequest request = new RestRequest("/employees/" + id, Method.DELETE);
+            IRestResponse response = client.Execute(request);
+            return (response.IsSuccessful);
+        }
+
     }
 }

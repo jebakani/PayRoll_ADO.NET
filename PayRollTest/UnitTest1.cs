@@ -238,6 +238,14 @@ namespace PayRollTest
             bool actual=new PayRollJsonServer().UpdateValueInJsonServer(employee);
             Assert.AreEqual(expected, actual);
         }
+        //UC5-Delete employee from the serever
+        [TestMethod]
+        public void DeleteEmployee()
+        {
+            bool expected = true;
+            bool actual = new PayRollJsonServer().DeleteData(4);
+            Assert.AreEqual(expected, actual);
+        }
 
 
     }
